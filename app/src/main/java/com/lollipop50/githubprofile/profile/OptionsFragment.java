@@ -40,15 +40,22 @@ public class OptionsFragment extends Fragment {
         okHttpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Use OkHttp
+                showProfile(true);
             }
         });
 
         retrofitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Use Retrofit
+                showProfile(false);
             }
         });
+    }
+
+    private void showProfile (boolean isOkHttp) {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, ProfileFragment.makeInstance(isOkHttp))
+                .addToBackStack(null)
+                .commit();
     }
 }
