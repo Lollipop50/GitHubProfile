@@ -24,7 +24,7 @@ import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
 
-    private final String USERNAME = "Lollipop50";
+    private final String USERNAME = "Lollipop50";   //Wrong username may cause crash
     private static final String KEY_IS_OKHTTP = "is_okhttp";
 
     private ImageView avatarView;
