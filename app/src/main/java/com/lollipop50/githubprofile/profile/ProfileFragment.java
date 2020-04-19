@@ -1,4 +1,4 @@
-package com.lollipop50.githubprofile;
+package com.lollipop50.githubprofile.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,42 +10,35 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class OptionsFragment extends Fragment {
+import com.lollipop50.githubprofile.R;
 
-    private Button okHttpButton;
-    private Button retrofitButton;
+public class ProfileFragment extends Fragment {
+
+    private Button repositoriesButton;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_options, container, false);
+        return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        okHttpButton = view.findViewById(R.id.okhttp_button);
-        retrofitButton = view.findViewById(R.id.retrofit_button);
+        repositoriesButton = view.findViewById(R.id.repositories_button);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        okHttpButton.setOnClickListener(new View.OnClickListener() {
+        repositoriesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            }
-        });
-
-        retrofitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+                // Open user's repositories in browser
             }
         });
     }

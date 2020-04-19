@@ -5,4 +5,5 @@
 
     <string name="okhttp_button">OkHttp</string>
     <string name="retrofit_button">Retrofit</string>
+    <string name="repositories_button">Repositories</string>
 </resources>

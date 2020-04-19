@@ -1,9 +1,11 @@
-package com.lollipop50.githubprofile;
+package com.lollipop50.githubprofile.profile;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+
+import com.lollipop50.githubprofile.R;
 
 public class ProfileActivity extends AppCompatActivity {
 
