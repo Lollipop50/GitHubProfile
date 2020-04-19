@@ -1,5 +1,6 @@
 package com.lollipop50.githubprofile.profile;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,17 +9,25 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.fragment.app.Fragment;
 
 import com.lollipop50.githubprofile.R;
+import com.lollipop50.githubprofile.model.Profile;
+import com.lollipop50.githubprofile.networking.RequestMaker;
+import com.lollipop50.githubprofile.networking.okhttp.OkHttpRequestMaker;
+import com.lollipop50.githubprofile.networking.retrofit.RetrofitRequestMaker;
+import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
 
-    private static final String KEY_IS_OKHTTP = "is_ok_http";
+    private final String USERNAME = "Lollipop50";
+    private static final String KEY_IS_OKHTTP = "is_okhttp";
 
-    private ImageView avatar_view;
+    private ImageView avatarView;
     private TextView usernameView;
     private TextView idView;
     private Button repositoriesButton;
@@ -35,7 +44,7 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        avatar_view = view.findViewById(R.id.avatar_view);
+        avatarView = view.findViewById(R.id.avatar_view);
         usernameView = view.findViewById(R.id.username_view);
         idView = view.findViewById(R.id.id_view);
         repositoriesButton = view.findViewById(R.id.repositories_button);
@@ -45,6 +54,8 @@ public class ProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        new InternetRequestTask().execute();
+
         repositoriesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,7 +64,28 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    public static ProfileFragment makeInstance (boolean isOkHttp) {
+    @MainThread
+    private void applyProfile(Profile profile) {
+        Picasso.get()
+                .load(profile.getAvatarUrl())
+                .into(avatarView);
+
+        usernameView.setText(profile.getLogin());
+
+        String id = "ID: " + profile.getId();
+        idView.setText(id);
+    }
+
+    @WorkerThread
+    private Profile executeRequest() {
+        boolean isOkHttp = getArguments().getBoolean(KEY_IS_OKHTTP);
+
+        RequestMaker requestMaker = isOkHttp ? new OkHttpRequestMaker() : new RetrofitRequestMaker();
+
+        return requestMaker.makeRequest(USERNAME);
+    }
+
+    public static ProfileFragment makeInstance(boolean isOkHttp) {
         Bundle args = new Bundle();
         args.putBoolean(KEY_IS_OKHTTP, isOkHttp);
 
@@ -61,5 +93,18 @@ public class ProfileFragment extends Fragment {
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    private class InternetRequestTask extends AsyncTask<Void, Void, Profile> {
+
+        @Override
+        protected Profile doInBackground(Void... voids) {
+            return executeRequest();
+        }
+
+        @Override
+        protected void onPostExecute(Profile profile) {
+            applyProfile(profile);
+        }
     }
 }
