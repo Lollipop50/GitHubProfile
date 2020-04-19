@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GitHub Profile</string>
+
+    <string name="options_text">What do you want to use to make HTTP request?</string>
+
+    <string name="okhttp_button">OkHttp</string>
+    <string name="retrofit_button">Retrofit</string>
 </resources>
