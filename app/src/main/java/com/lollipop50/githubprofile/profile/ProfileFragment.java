@@ -1,5 +1,7 @@
 package com.lollipop50.githubprofile.profile;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,6 +34,8 @@ public class ProfileFragment extends Fragment {
     private TextView idView;
     private Button repositoriesButton;
 
+    private String reposUrl = "https://github.com/";
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,7 +63,8 @@ public class ProfileFragment extends Fragment {
         repositoriesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Open user's repositories in browser
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(reposUrl));
+                startActivity(browserIntent);
             }
         });
     }
@@ -70,7 +75,9 @@ public class ProfileFragment extends Fragment {
                 .load(profile.getAvatarUrl())
                 .into(avatarView);
 
-        usernameView.setText(profile.getLogin());
+        String login = profile.getLogin();
+        usernameView.setText(login);
+        reposUrl += login + "?tab=repositories";
 
         String id = "ID: " + profile.getId();
         idView.setText(id);
