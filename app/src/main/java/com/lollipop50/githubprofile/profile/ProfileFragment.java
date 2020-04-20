@@ -26,7 +26,7 @@ import com.squareup.picasso.Picasso;
 
 public class ProfileFragment extends Fragment {
 
-    private final String USERNAME = "Lollipop50";   //Wrong username may cause crash
+    private static final String KEY_USERNAME = "username";
     private static final String KEY_IS_OKHTTP = "is_okhttp";
 
     private ImageView avatarView;
@@ -52,6 +52,7 @@ public class ProfileFragment extends Fragment {
         usernameView = view.findViewById(R.id.username_view);
         idView = view.findViewById(R.id.id_view);
         repositoriesButton = view.findViewById(R.id.repositories_button);
+        repositoriesButton.setEnabled(false);
     }
 
     @Override
@@ -71,35 +72,55 @@ public class ProfileFragment extends Fragment {
 
     @MainThread
     private void applyProfile(Profile profile) {
-        Picasso.get()
-                .load(profile.getAvatarUrl())
-                .into(avatarView);
+        try {
+            String login = profile.getLogin();
 
-        String login = profile.getLogin();
-        usernameView.setText(login);
-        reposUrl += login + "?tab=repositories";
+            if (login == null) {
+                setUserIsNotFound();
+            } else {
+                Picasso.get()
+                        .load(profile.getAvatarUrl())
+                        .into(avatarView);
 
-        String id = "ID: " + profile.getId();
-        idView.setText(id);
+                usernameView.setText(login);
+
+                reposUrl += login + "?tab=repositories";
+
+                String id = "ID: " + profile.getId();
+                idView.setText(id);
+
+                repositoriesButton.setEnabled(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            setUserIsNotFound();
+        }
     }
 
     @WorkerThread
     private Profile executeRequest() {
+        String username = getArguments().getString(KEY_USERNAME);
         boolean isOkHttp = getArguments().getBoolean(KEY_IS_OKHTTP);
 
         RequestMaker requestMaker = isOkHttp ? new OkHttpRequestMaker() : new RetrofitRequestMaker();
 
-        return requestMaker.makeRequest(USERNAME);
+        return requestMaker.makeRequest(username);
     }
 
-    public static ProfileFragment makeInstance(boolean isOkHttp) {
+    public static ProfileFragment makeInstance(String username, boolean isOkHttp) {
         Bundle args = new Bundle();
+        args.putString(KEY_USERNAME, username);
         args.putBoolean(KEY_IS_OKHTTP, isOkHttp);
 
         ProfileFragment fragment = new ProfileFragment();
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    private void setUserIsNotFound() {
+        usernameView.setText(R.string.not_found_text);
+        idView.setText(R.string.no_id_text);
     }
 
     private class InternetRequestTask extends AsyncTask<Void, Void, Profile> {

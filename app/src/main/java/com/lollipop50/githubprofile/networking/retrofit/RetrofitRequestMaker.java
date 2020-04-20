@@ -25,7 +25,7 @@ public class RetrofitRequestMaker implements RequestMaker {
             return getUserCall.execute().body();
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return new Profile();
         }
     }
 }

@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">GitHub Profile</string>
 
-    <string name="options_text">What do you want to use to make HTTP request?</string>
+    <string name="options_text">Open with..</string>
+    <string name="username_text">Login</string>
+    <string name="not_found_text">User is not found</string>
+    <string name="no_id_text">ID: 0</string>
+
+    <string name="username_edittext">Enter your GitHub username</string>
 
     <string name="okhttp_button">OkHttp</string>
     <string name="retrofit_button">Retrofit</string>
